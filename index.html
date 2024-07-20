@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CRUD Application</title>
+  </head>
+  <body>
+    <h1>Users</h1>
+    <table id="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="users-body"></tbody>
+    </table>
+    <h2>Add User</h2>
+    <form id="add-user-form">
+      <label>Name: <input type="text" id="name" required /></label>
+      <label>Email: <input type="email" id="email" required /></label>
+      <button type="submit">Add User</button>
+    </form>
+    <script>
+      const api = window.api;
+
+      async function loadUsers() {
+        const users = await api.fetchData();
+        const tbody = document.getElementById("users-body");
+        tbody.innerHTML = "";
+        users.forEach((user) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+          <td>${user.id}</td>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>
+            <button onclick="editUser(${user.id}, '${user.name}', '${user.email}')">Edit</button>
+            <button onclick="deleteUser(${user.id})">Delete</button>
+          </td>
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function addUser(event) {
+        event.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        await api.addData({ name, email });
+        loadUsers();
+      }
+
+      async function deleteUser(id) {
+        await api.deleteData(id);
+        loadUsers();
+      }
+
+      function editUser(id, name, email) {
+        // Navigate to edit page with user details (implement as needed)
+        window.location.href = `edit.html?id=${id}&name=${name}&email=${email}`;
+      }
+
+      document
+        .getElementById("add-user-form")
+        .addEventListener("submit", addUser);
+
+      loadUsers();
+    </script>
+  </body>
+</html>

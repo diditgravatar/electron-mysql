@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit User</title>
+  </head>
+  <body>
+    <h1>Edit User</h1>
+    <form id="edit-user-form">
+      <input type="hidden" id="user-id" />
+      <label>Name: <input type="text" id="name" required /></label>
+      <label>Email: <input type="email" id="email" required /></label>
+      <button type="submit">Update User</button>
+    </form>
+    <script>
+      const api = window.api;
+
+      async function loadUserData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+        const name = urlParams.get("name");
+        const email = urlParams.get("email");
+
+        document.getElementById("user-id").value = id;
+        document.getElementById("name").value = name;
+        document.getElementById("email").value = email;
+      }
+
+      async function updateUser(event) {
+        event.preventDefault();
+        const id = document.getElementById("user-id").value;
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        await api.updateData({ id, name, email });
+        window.location.href = "index.html";
+      }
+
+      document
+        .getElementById("edit-user-form")
+        .addEventListener("submit", updateUser);
+
+      loadUserData();
+    </script>
+  </body>
+</html>
